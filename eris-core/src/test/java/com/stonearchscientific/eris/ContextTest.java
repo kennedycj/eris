@@ -87,16 +87,11 @@ public class ContextTest {
     }
     @Test
     public void testFind() {
-        Concept concept = context.find(new ArrayList<>(Arrays.asList("a", "b", "c")));
-        assertEquals(concept.extent(), bitset("10011"));
-        concept = context.find(new ArrayList<>(Collections.singletonList("a")));
-        assertEquals(concept.extent(), bitset("10011"));
-        concept = context.find(new ArrayList<>(Arrays.asList("a", "e")));
-        assertEquals(concept.extent(), bitset("00011"));
-        concept = context.find(new ArrayList<>(Collections.singletonList("e")));
-        assertEquals(concept.extent(), bitset("01011"));
-        concept = context.find(new ArrayList<>(Arrays.asList("a", "x")));
-        assertEquals(concept.extent(), bitset("00000"));
+        assertEquals(context.find(new ArrayList<>(Arrays.asList("a", "b", "c"))).extent(), bitset("10011"));
+        assertEquals(context.find(new ArrayList<>(Collections.singletonList("a"))).extent(), bitset("10011"));
+        assertEquals(context.find(new ArrayList<>(Arrays.asList("a", "e"))).extent(), bitset("00011"));
+        assertEquals(context.find(new ArrayList<>(Collections.singletonList("e"))).extent(), bitset("01011"));
+        assertEquals(context.find(new ArrayList<>(Arrays.asList("a", "x"))).extent(), bitset("00000"));
     }
     @Test
     public void testSupport() {

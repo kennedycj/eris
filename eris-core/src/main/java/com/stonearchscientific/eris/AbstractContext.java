@@ -2,12 +2,18 @@ package com.stonearchscientific.eris;
 
 import com.tinkerpop.blueprints.Graph;
 import com.tinkerpop.blueprints.impls.tg.TinkerGraph;
+import org.apache.tinkerpop.gremlin.structure.io.graphson.GraphSONMapper;
+import org.apache.tinkerpop.gremlin.driver.Cluster;
+import org.apache.tinkerpop.gremlin.driver.Client;
+import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection;
+import org.apache.tinkerpop.gremlin.structure.util.empty.EmptyGraph;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import static com.google.common.base.Preconditions.checkNotNull;
+
 
 public abstract class AbstractContext<R extends Relatable<R>> implements Collection<R> {
     protected boolean up;
@@ -16,6 +22,17 @@ public abstract class AbstractContext<R extends Relatable<R>> implements Collect
     public AbstractContext() {
         this.up = true;
         this.graph = new TinkerGraph();
+    }
+    // New constructor that connects to a Gremlin server
+    public AbstractContext(String gremlinServerHost, int gremlinServerPort) {
+        this.up = true;
+        Cluster cluster = Cluster.build()
+                .addContactPoint(gremlinServerHost)
+                .port(gremlinServerPort)
+                .serializer(Serializers.GRAPHSON_V3D0)
+                .create();
+        Client client = cluster.connect();
+        this.graph = EmptyGraph.instance().traversal().withRemote(DriverRemoteConnection.using(cluster));
     }
     public AbstractContext<R> dual() {
         up = !up;
